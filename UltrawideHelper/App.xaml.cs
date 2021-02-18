@@ -1,8 +1,15 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
-using Microsoft.Windows.Sdk;
+using Microsoft.Win32;
 using System;
+using System.IO;
+using System.Threading;
 using System.Windows;
-using System.Windows.Interop;
+using System.Windows.Navigation;
+using UltrawideHelper.Configuration;
+using UltrawideHelper.Data;
+using UltrawideHelper.Shortcuts;
+using UltrawideHelper.Taskbar;
+using UltrawideHelper.Windows;
 
 namespace UltrawideHelper
 {
@@ -11,83 +18,63 @@ namespace UltrawideHelper
     /// </summary>
     public partial class App : Application
     {
-        private IntPtr handle;
-        private HwndSource source;
-        private HWND hwnd;
-
+        private ConfigurationManager configurationManager;
+        private WindowManager windowManager;
+        private ShortcutManager shortcutManager;
+        private TaskbarManager taskbarManager;
         private TaskbarIcon notifyIcon;
 
-        private const int HOTKEY_ID = 9000;
+        private const string AppName = "UltrawideHelper";
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            MainWindow = new MainWindow();
-            ((MainWindow)MainWindow).InitHwnd();
+            var appMutex = new Mutex(true, AppName, out bool newMutexCreated);
+            if (!newMutexCreated)
+            {
+                Shutdown();
+                return;
+            }
 
-            // Create the notifyicon (it's a resource declared in NotifyIconResources.xaml)
-            notifyIcon = (TaskbarIcon) FindResource("NotifyIcon");
+            // TODO: Auto updater?
 
-            handle = new WindowInteropHelper(MainWindow).Handle;
-            source = HwndSource.FromHwnd(handle);
-            hwnd = new HWND(handle);
+            configurationManager = new ConfigurationManager();
+            configurationManager.Changed += ConfigurationManager_Changed;
+            ConfigurationManager_Changed(configurationManager.ConfigFile);
 
-            source.AddHook(HwndHook);
-            PInvoke.RegisterHotKey(hwnd, HOTKEY_ID, Constants.MOD_ALT, Constants.VK_F11);
-        }
+            windowManager = new WindowManager(configurationManager);
+
+            shortcutManager = new ShortcutManager(configurationManager, windowManager);
+
+            taskbarManager = new TaskbarManager(configurationManager);
+
+            notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+        } 
 
         protected override void OnExit(ExitEventArgs e)
         {
-            PInvoke.UnregisterHotKey(hwnd, HOTKEY_ID);
-            source.RemoveHook(HwndHook);            
             notifyIcon.Dispose();
+            taskbarManager.Dispose();
+            shortcutManager.Dispose();
+            windowManager.Dispose();
+            configurationManager.Dispose();
 
             base.OnExit(e);
         }
 
-        private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        private void ConfigurationManager_Changed(ConfigurationFile newConfiguration)
         {
-            switch (msg)
+            var autoStartKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+
+            if (newConfiguration.AutoStart)
             {
-                case Constants.WM_HOTKEY:
-
-                    switch (wParam.ToInt32())
-                    {
-                        case HOTKEY_ID:
-
-                            int vkey = (((int)lParam >> 16) & 0xFFFF);
-
-                            if (vkey == Constants.VK_F11)
-                            {
-                                OnHotKeyPressed();
-                            }
-
-                            handled = true;
-                            break;
-                    }
-
-                    break;
+                autoStartKey.SetValue(AppName, Path.ChangeExtension(Application.ResourceAssembly.Location, ".exe"));
             }
-
-            return IntPtr.Zero;
-        }
-
-        private void OnHotKeyPressed()
-        {
-            var foregroundHwnd = PInvoke.GetForegroundWindow();
-
-            PInvoke.SetWindowLong(foregroundHwnd, Constants.GWL_STYLE, (int)Constants.WS_VISIBLE);
-            PInvoke.MoveWindow(foregroundHwnd, 0, -1, 5120, 1440, true);
-
-            //PInvoke.SetWindowPos(foregroundHwnd, new HWND(0), 0, 0, 3440, 1440, 0);
-
-            //var style = PInvoke.GetWindowLong(foregroundHwnd, Constants.GWL_STYLE);
-            //MessageBox.Show($"style: {style}");
-
-            //RECT rect;
-            //PInvoke.GetWindowRect(foregroundHwnd, out rect);
-            //MessageBox.Show($"bottom: {rect.bottom}, left: {rect.left}, right: {rect.right}, top: {rect.top}");
-        }
+            else if (autoStartKey.GetValue(AppName) != null)
+            {
+                autoStartKey.DeleteValue(AppName);
+            }
+        }        
     }
 }

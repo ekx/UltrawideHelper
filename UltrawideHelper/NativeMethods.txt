@@ -1,14 +1,43 @@
 ﻿RegisterHotKey
 UnregisterHotKey
+SendMessage
 
+IsWindow
+GetWindowThreadProcessId
 GetForegroundWindow
-GetWindowRect
+SetForegroundWindow
 MoveWindow
 SetWindowPos
+GetWindowRect
 GetWindowLong
 SetWindowLong
+ShowWindow
+IsWindowVisible
+FindWindow
+EnumWindows
+GetClassName
 
 WM_HOTKEY
+WM_ENTERSIZEMOVE
+WM_EXITSIZEMOVE
+WM_MOVE
+WM_MOVING
+WM_SIZE
+WM_SIZING
+
+SWP_NOSIZE
+SWP_NOMOVE
+SWP_NOZORDER
+SWP_NOACTIVATE
+SWP_NOOWNERZORDER
+SWP_NOSENDCHANGING
+SWP_FRAMECHANGED
+
+GWL_STYLE
+GWL_EXSTYLE
+
+SW_HIDE
+SW_SHOW
 
 MOD_ALT
 MOD_CONTROL
@@ -152,9 +181,6 @@ VK_ZOOM
 VK_NONAME
 VK_PA1
 VK_OEM_CLEAR
-
-GWL_STYLE
-GWL_EXSTYLE
 
 WS_BORDER
 WS_CAPTION

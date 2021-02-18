@@ -14,12 +14,6 @@ namespace UltrawideHelper
             InitializeComponent();
         }
 
-        public void InitHwnd()
-        {
-            var helper = new WindowInteropHelper(this);
-            helper.EnsureHandle();
-        }
-
         protected override void OnClosing(CancelEventArgs e)
         {
             e.Cancel = true;

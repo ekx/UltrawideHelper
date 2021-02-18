@@ -4,7 +4,7 @@
                     xmlns:local="clr-namespace:UltrawideHelper">
     
     <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
-        <MenuItem Header="Configure" Command="{Binding ToggleWindowCommand}" />
+        <MenuItem Header="Configure" Command="{Binding ShowConfigurationFile}" />
         <Separator />
         <MenuItem Header="Exit" Command="{Binding ExitApplicationCommand}" />
     </ContextMenu>
@@ -13,8 +13,8 @@
     <!-- the application's NotifyIcon - started from App.xaml.cs. Declares its own view model. -->
     <tb:TaskbarIcon x:Key="NotifyIcon"
                     IconSource="/App.ico"
-                    ToolTipText="UltrawideHelper Tray Menu"
-                    DoubleClickCommand="{Binding ToggleWindowCommand}"
+                    ToolTipText="UltrawideHelper"
+                    DoubleClickCommand="{Binding ShowConfigurationFile}"
                     ContextMenu="{StaticResource SysTrayMenu}">
 
         <!-- self-assign a data context (could also be done programmatically) -->

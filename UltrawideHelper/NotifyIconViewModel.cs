@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Input;
 
 namespace UltrawideHelper
@@ -33,6 +34,25 @@ namespace UltrawideHelper
             }
         }
 
+        public ICommand ShowConfigurationFile
+        {
+            get
+            {
+                return new DelegateCommand 
+                { 
+                    CommandAction = () =>
+                    {
+                        new Process
+                        {
+                            StartInfo = new ProcessStartInfo(@"config.yaml")
+                            {
+                                UseShellExecute = true
+                            }
+                        }.Start();
+                    } 
+                };
+            }
+        }
 
         /// <summary>
         /// Shuts down the application.

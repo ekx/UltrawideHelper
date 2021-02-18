@@ -8,6 +8,8 @@
 		<IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
 		<PackageIcon></PackageIcon>
 		<ApplicationIcon>App.ico</ApplicationIcon>
+		<Authors>Benjamin Dengler</Authors>
+		<Company />
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -24,10 +26,17 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
+		<PackageReference Include="YamlDotNet" Version="9.1.4" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Resource Include="App.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="config.yaml">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>
