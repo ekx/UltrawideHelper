@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using UltrawideHelper.Configuration;
 
 namespace UltrawideHelper
 {
@@ -44,7 +45,7 @@ namespace UltrawideHelper
                     {
                         new Process
                         {
-                            StartInfo = new ProcessStartInfo(@"config.yaml")
+                            StartInfo = new ProcessStartInfo(ConfigurationManager.FilePath)
                             {
                                 UseShellExecute = true
                             }

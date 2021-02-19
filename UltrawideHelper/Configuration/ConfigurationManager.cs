@@ -14,12 +14,12 @@ namespace UltrawideHelper.Configuration
 
         public event ConfigurationChangedEventHandler Changed;
 
+        public static readonly string FileName = "config.yaml";
+        public static readonly string FileDirectory = Path.GetDirectoryName(Application.ResourceAssembly.Location);
+        public static readonly string FilePath = Path.Combine(FileDirectory, FileName);
+
         private IDeserializer deserializer;
         private FileSystemWatcher fileSystemWatcher;
-
-        private static readonly string FileName = "config.yaml";
-        private static readonly string FileDirectory = Path.GetDirectoryName(Application.ResourceAssembly.Location);
-        private static readonly string FilePath = Path.Combine(FileDirectory, FileName);
 
         public ConfigurationManager()
         {
