@@ -17,7 +17,9 @@ namespace UltrawideHelper.Configuration
         private IDeserializer deserializer;
         private FileSystemWatcher fileSystemWatcher;
 
-        private const string FileName = "config.yaml";
+        private static readonly string FileName = "config.yaml";
+        private static readonly string FileDirectory = Path.GetDirectoryName(Application.ResourceAssembly.Location);
+        private static readonly string FilePath = Path.Combine(FileDirectory, FileName);
 
         public ConfigurationManager()
         {
@@ -25,10 +27,10 @@ namespace UltrawideHelper.Configuration
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
 
-            ConfigFile = deserializer.Deserialize<ConfigurationFile>(File.ReadAllText(FileName));
+            ConfigFile = deserializer.Deserialize<ConfigurationFile>(File.ReadAllText(FilePath));
 
             fileSystemWatcher = new FileSystemWatcher();
-            fileSystemWatcher.Path = Directory.GetCurrentDirectory();
+            fileSystemWatcher.Path = FileDirectory;
             fileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite;
             fileSystemWatcher.Filter = FileName;
             fileSystemWatcher.Changed += FileSystemWatcher_Changed;
@@ -41,7 +43,7 @@ namespace UltrawideHelper.Configuration
 
             await Task.Delay(10);
 
-            ConfigFile = deserializer.Deserialize<ConfigurationFile>(await File.ReadAllTextAsync(FileName));
+            ConfigFile = deserializer.Deserialize<ConfigurationFile>(await File.ReadAllTextAsync(FilePath));
             Application.Current.Dispatcher.Invoke(new Action(() => { Changed.Invoke(ConfigFile); }));
 
             fileSystemWatcher.EnableRaisingEvents = true;
