@@ -1,10 +1,8 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Win32;
-using System;
 using System.IO;
 using System.Threading;
 using System.Windows;
-using System.Windows.Navigation;
 using UltrawideHelper.Configuration;
 using UltrawideHelper.Data;
 using UltrawideHelper.Shortcuts;
