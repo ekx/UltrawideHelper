@@ -69,7 +69,12 @@ namespace UltrawideHelper
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var serializableException = new SerializableException((Exception) e.ExceptionObject);
-            File.WriteAllText("error.log", serializableException.ToString());
+
+            var fileName = "error.log";
+            var fileDirectory = Path.GetDirectoryName(Application.ResourceAssembly.Location);
+            var filePath = Path.Combine(fileDirectory, fileName);
+
+            File.WriteAllText(filePath, serializableException.ToString());
         }
 
         private void ConfigurationManager_Changed(ConfigurationFile newConfiguration)
