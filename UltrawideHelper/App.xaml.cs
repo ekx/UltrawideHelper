@@ -23,6 +23,7 @@ namespace UltrawideHelper
         private ShortcutManager shortcutManager;
         private TaskbarManager taskbarManager;
         private TaskbarIcon notifyIcon;
+        private Mutex appMutex;
 
         private const string AppName = "UltrawideHelper";
 
@@ -30,7 +31,7 @@ namespace UltrawideHelper
         {
             base.OnStartup(e);
 
-            var appMutex = new Mutex(true, AppName, out bool newMutexCreated);
+            appMutex = new Mutex(true, AppName, out bool newMutexCreated);
             if (!newMutexCreated)
             {
                 Shutdown();
@@ -54,11 +55,12 @@ namespace UltrawideHelper
 
         protected override void OnExit(ExitEventArgs e)
         {
-            notifyIcon.Dispose();
-            taskbarManager.Dispose();
-            shortcutManager.Dispose();
-            windowManager.Dispose();
-            configurationManager.Dispose();
+            appMutex?.Dispose();
+            notifyIcon?.Dispose();
+            taskbarManager?.Dispose();
+            shortcutManager?.Dispose();
+            windowManager?.Dispose();
+            configurationManager?.Dispose();
 
             base.OnExit(e);
         }
