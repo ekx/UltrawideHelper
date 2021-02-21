@@ -1,5 +1,6 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Win32;
+using System;
 using System.IO;
 using System.Threading;
 using System.Windows;
@@ -36,6 +37,8 @@ namespace UltrawideHelper
                 return;
             }
 
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
             // TODO: Auto updater?
 
             configurationManager = new ConfigurationManager();
@@ -49,7 +52,7 @@ namespace UltrawideHelper
             taskbarManager = new TaskbarManager(configurationManager);
 
             notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
-        } 
+        }
 
         protected override void OnExit(ExitEventArgs e)
         {
@@ -61,6 +64,12 @@ namespace UltrawideHelper
             configurationManager?.Dispose();
 
             base.OnExit(e);
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var serializableException = new SerializableException((Exception) e.ExceptionObject);
+            File.WriteAllText("error.log", serializableException.ToString());
         }
 
         private void ConfigurationManager_Changed(ConfigurationFile newConfiguration)

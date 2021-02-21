@@ -52,35 +52,28 @@ namespace UltrawideHelper.Windows
                 return;
             }
 
-            try
-            {
-                var element = sender as AutomationElement;
+            var element = sender as AutomationElement;
 
-                if (element == null)
-                {
-                    return;
-                }
-
-                var profile = configurationManager.ConfigFile.WindowProfiles.SingleOrDefault(p => new Regex(p.TitleRegex).IsMatch(element.Current.Name));
-
-                if (profile == null)
-                {
-                    return;
-                }
-
-                var process = Process.GetProcessById(element.Current.ProcessId);
-
-                if (process == null || !process.ProcessName.Equals(profile.ProcessName))
-                {
-                    return;
-                }
-
-                ApplyWindowComposition(element.Current.NativeWindowHandle, profile.WindowComposition);
-            }
-            catch (ElementNotAvailableException)
+            if (element == null)
             {
                 return;
             }
+
+            var profile = configurationManager.ConfigFile.WindowProfiles.SingleOrDefault(p => new Regex(p.TitleRegex).IsMatch(element.Current.Name));
+
+            if (profile == null)
+            {
+                return;
+            }
+
+            var process = Process.GetProcessById(element.Current.ProcessId);
+
+            if (process == null || !process.ProcessName.Equals(profile.ProcessName))
+            {
+                return;
+            }
+
+            ApplyWindowComposition(element.Current.NativeWindowHandle, profile.WindowComposition);
         }
 
         private void DispatcherTimer_Tick(object sender, EventArgs e)
