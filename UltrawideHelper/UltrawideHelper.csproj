@@ -10,11 +10,14 @@
 		<ApplicationIcon>App.ico</ApplicationIcon>
 		<Authors>Benjamin Dengler</Authors>
 		<Company />
+		<PackageProjectUrl>https://github.com/ekx/UltrawideHelper</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/ekx/UltrawideHelper</RepositoryUrl>
+		<RepositoryType>Git</RepositoryType>
+		<Copyright>2021</Copyright>
+		<Description>Utility to help with borderless gaming on ultrawide monitors</Description>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<NeutralLanguage>en</NeutralLanguage>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <None Remove="App.ico" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<AdditionalFiles Include="NativeMethods.txt" />
@@ -26,6 +29,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
+		<PackageReference Include="Octokit" Version="0.50.0" />
 		<PackageReference Include="YamlDotNet" Version="9.1.4" />
 	</ItemGroup>
 

@@ -1,26 +1,21 @@
-autoStart: false
-autoApplyProfiles: true
-hideTaskbar: true
+# General Settings
+autoStart: false                    # Start the application with the system?
+autoUpdate: true                    # Toggles the automatic update of the application when newer versions are released
+autoApplyProfiles: true             # Can be used to pause the automatic window profiles
+hideTaskbar: true                   # When true taskbar will only be visible when the start menu is visible
+
+# Shortcut Settings
 shortcutProfiles:
-- id: 9000
-  keyCombination: ALT+F9
+- id: 9001                          # Identifier for the shortcut. Must be unique
+  keyCombination: ALT+F10           # Key combination. Can be any number of modifiers seperated by + symbols followed by one key. Valid modifiers and keys can be looked up in LookupTables.cs
   windowComposition:
-    positionX: 3433
-    positionY: 0
-    width: 1694
-    height: 1447
-    windowStyles:
-    extendedWindowStyles:
-- id: 9001
-  keyCombination: ALT+F10
-  windowComposition:
-    positionX: 0
-    positionY: 0
-    width: 2560
-    height: 1440
-    windowStyles:
+    positionX: 0                    # X Position of the window after the hotkey has been pressed
+    positionY: 0                    # Y Position of the window after the hotkey has been pressed
+    width: 2560                     # Width of the window after the hotkey has been pressed
+    height: 1440                    # Height of the window after the hotkey has been pressed
+    windowStyles:                   # List of window styles to be set after the hotkey has been pressed. If empty, window styles will be left alone. Valid styles can be looked up in LookupTables.cs
     - WS_VISIBLE
-    extendedWindowStyles: 
+    extendedWindowStyles:           # List of extended window styles to be set after the hotkey has been pressed. If empty, extended window styles will be left alone. Valid styles can be looked up in LookupTables.cs
 - id: 9002
   keyCombination: ALT+F11
   windowComposition:
@@ -31,28 +26,20 @@ shortcutProfiles:
     windowStyles:
     - WS_VISIBLE
     extendedWindowStyles: 
+
+# Auto Window Profile Settings
 windowProfiles:
-- titleRegex: ^(192.168.178.78 - Remote Desktop Connection)$
-  processName: mstsc
+- titleRegex: ^(Yakuza 4)$          # A regular expression. If this expression matches the window title the following profile will be applied automatically at window creation
+  processName: Yakuza4              # The name of process that spawns the window. Must be correct or profile wont be applied automatically
   windowComposition:
-    positionX: 0
-    positionY: -1
-    width: 5120
-    height: 1440
-    windowStyles:
+    positionX: 0                    # X Position that will be automatically applied to the window
+    positionY: 0                    # Y Position that will be automatically applied to the window
+    width: 3440                     # Width that will be automatically applied to the window
+    height: 1440                    # Height that will be automatically applied to the window
+    delayMilliseconds: 20           # Delay in milliseconds before the profile will be applied
+    windowStyles:                   # List of window styles to be automatically applied to the window. If empty, window styles will be left alone. Valid styles can be looked up in LookupTables.cs
     - WS_VISIBLE
-    extendedWindowStyles: 
-- titleRegex: ^(Yakuza 4)$
-  processName: Yakuza4
-  windowComposition:
-    positionX: 0
-    positionY: 0
-    width: 3440
-    height: 1440
-    delayMilliseconds: 20
-    windowStyles:
-    - WS_VISIBLE
-    extendedWindowStyles:
+    extendedWindowStyles:           # List of extended window styles to be automatically applied to the window. If empty, extended window styles will be left alone. Valid styles can be looked up in LookupTables.cs
 - titleRegex: ^(Persona4 GOLDEN).*$
   processName: P4G
   windowComposition:

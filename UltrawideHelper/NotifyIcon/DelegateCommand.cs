@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace UltrawideHelper
+namespace UltrawideHelper.NotifyIcon
 {
     /// <summary>
     /// Simplistic delegate command for the demo.

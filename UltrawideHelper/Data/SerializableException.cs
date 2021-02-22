@@ -10,7 +10,7 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace UltrawideHelper
+namespace UltrawideHelper.Data
 {
 	[Serializable]
 	public class SerializableException

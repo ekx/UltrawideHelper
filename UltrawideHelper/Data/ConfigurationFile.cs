@@ -6,6 +6,8 @@ namespace UltrawideHelper.Data
     {
         public bool AutoStart { get; set; }
 
+        public bool AutoUpdate { get; set; }
+
         public bool AutoApplyProfiles { get; set; }
 
         public bool HideTaskbar { get; set; }

@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using UltrawideHelper.Configuration;
 
-namespace UltrawideHelper
+namespace UltrawideHelper.NotifyIcon
 {
     /// <summary>
     /// Provides bindable properties and commands for the NotifyIcon. In this sample, the
@@ -12,29 +12,6 @@ namespace UltrawideHelper
     /// </summary>
     public class NotifyIconViewModel
     {
-        /// <summary>
-        /// Shows a window, if none is already open.
-        /// </summary>
-        public ICommand ToggleWindowCommand
-        {
-            get
-            {
-                return new DelegateCommand
-                {
-                    CanExecuteFunc = () => Application.Current.MainWindow != null,
-                    CommandAction = () =>
-                    {
-                        if (Application.Current.MainWindow == null)
-                        {
-                            Application.Current.MainWindow = new MainWindow();
-                        }
-
-                        Application.Current.MainWindow.Visibility = Application.Current.MainWindow.IsVisible ? Visibility.Hidden : Visibility.Visible;
-                    }
-                };
-            }
-        }
-
         public ICommand ShowConfigurationFile
         {
             get
