@@ -56,14 +56,19 @@ namespace UltrawideHelper
 
         protected override void OnExit(ExitEventArgs e)
         {
+            CleanUp();
+
+            base.OnExit(e);
+        }
+
+        private void CleanUp()
+        {
             appMutex?.Dispose();
             notifyIcon?.Dispose();
             taskbarManager?.Dispose();
             shortcutManager?.Dispose();
             windowManager?.Dispose();
             configurationManager?.Dispose();
-
-            base.OnExit(e);
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -75,6 +80,8 @@ namespace UltrawideHelper
             var filePath = Path.Combine(fileDirectory, fileName);
 
             File.WriteAllText(filePath, serializableException.ToString());
+
+            CleanUp();
         }
 
         private void ConfigurationManager_Changed(ConfigurationFile newConfiguration)
