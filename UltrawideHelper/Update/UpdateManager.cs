@@ -19,7 +19,8 @@ namespace UltrawideHelper.Update
 
         private const string UpdateFileName = "update.zip";
         private const string UpdateScriptFileName = "update.ps1";
-        private const string UpdateScript = @"Expand-Archive -Force -Path update.zip -DestinationPath .\
+        private const string UpdateScript = 
+@"Expand-Archive -Force -Path update.zip -DestinationPath .\
 Remove-Item update.zip -Force
 Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force
 Start-Process -FilePath UltrawideHelper.exe";

@@ -7,7 +7,7 @@ hideTaskbar: true                   # When true taskbar will only be visible whe
 # Shortcut Settings
 shortcutProfiles:
 - id: 9001                          # Identifier for the shortcut. Must be unique
-  keyCombination: ALT+F10           # Key combination. Can be any number of modifiers seperated by + symbols followed by one key. Valid modifiers and keys can be looked up in LookupTables.cs
+  keyCombination: ALT+F10           # Key combination. Can be any number of different modifiers seperated by + symbols followed by one key. Valid modifiers and keys can be looked up in LookupTables.cs
   windowComposition:
     positionX: 0                    # X Position of the window after the hotkey has been pressed
     positionY: 0                    # Y Position of the window after the hotkey has been pressed
