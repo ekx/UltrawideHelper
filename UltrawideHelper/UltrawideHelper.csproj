@@ -17,6 +17,10 @@
 		<Description>Utility to help with borderless gaming on ultrawide monitors</Description>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<NeutralLanguage>en</NeutralLanguage>
+		<AssemblyVersion>1.0.1.0</AssemblyVersion>
+		<FileVersion>1.0.1.0</FileVersion>
+		<PackageTags>gaming borderless ultrawide</PackageTags>
+		<Version>1.0.1</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -40,6 +44,10 @@
 	<ItemGroup>
 	  <None Update="config.yaml">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Include="..\LICENSE">
+	    <Pack>True</Pack>
+	    <PackagePath></PackagePath>
 	  </None>
 	</ItemGroup>
 

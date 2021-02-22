@@ -8,6 +8,7 @@ using UltrawideHelper.Configuration;
 using UltrawideHelper.Data;
 using UltrawideHelper.Shortcuts;
 using UltrawideHelper.Taskbar;
+using UltrawideHelper.Update;
 using UltrawideHelper.Windows;
 
 namespace UltrawideHelper
@@ -24,6 +25,7 @@ namespace UltrawideHelper
         private TaskbarIcon notifyIcon;
         private Mutex appMutex;
 
+        private const string AppOwner = "ekx";
         private const string AppName = "UltrawideHelper";
 
         protected override void OnStartup(StartupEventArgs e)
@@ -39,11 +41,15 @@ namespace UltrawideHelper
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            // TODO: Auto updater?
-
             configurationManager = new ConfigurationManager();
             configurationManager.Changed += ConfigurationManager_Changed;
             ConfigurationManager_Changed(configurationManager.ConfigFile);
+
+            if (configurationManager.ConfigFile.AutoUpdate)
+            {
+                var updateManager = new UpdateManager(AppOwner, AppName);
+                updateManager.CheckForNewVersion();
+            }
 
             windowManager = new WindowManager(configurationManager);
 
