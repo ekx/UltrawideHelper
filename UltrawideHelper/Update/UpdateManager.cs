@@ -1,11 +1,11 @@
 ﻿using Octokit;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using UltrawideHelper.Configuration;
 using Application = System.Windows.Application;
 
@@ -33,7 +33,16 @@ Start-Process -FilePath UltrawideHelper.exe";
 
         public async void CheckForNewVersion()
         {
-            var releases = await client.Repository.Release.GetAll(owner, repositoryName);
+            IReadOnlyList<Release> releases = null;
+
+            try
+            {
+                releases = await client.Repository.Release.GetAll(owner, repositoryName);
+            }
+            catch (RateLimitExceededException)
+            {
+                return;
+            }
 
             if (releases == null || releases.Count == 0)
             {
