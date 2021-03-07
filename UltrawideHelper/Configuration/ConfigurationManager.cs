@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,6 +22,9 @@ namespace UltrawideHelper.Configuration
         private IDeserializer deserializer;
         private FileSystemWatcher fileSystemWatcher;
 
+        private const int RetryDelayMilliseconds = 10;
+        private const int RetryCount = 10;
+
         public ConfigurationManager()
         {
             deserializer = new DeserializerBuilder()
@@ -41,12 +45,39 @@ namespace UltrawideHelper.Configuration
         {
             fileSystemWatcher.EnableRaisingEvents = false;
 
-            await Task.Delay(10);
-
-            ConfigFile = deserializer.Deserialize<ConfigurationFile>(await File.ReadAllTextAsync(FilePath));
+            ConfigFile = deserializer.Deserialize<ConfigurationFile>(await ReadConfigFile());
             Application.Current.Dispatcher.Invoke(new Action(() => { Changed.Invoke(ConfigFile); }));
 
             fileSystemWatcher.EnableRaisingEvents = true;
+        }
+
+        private async Task<string> ReadConfigFile()
+        {
+            await Task.Delay(RetryDelayMilliseconds);
+
+            for (int i = 0; i < RetryCount; i++)
+            {
+                try
+                {
+                    using (var fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    using (var textReader = new StreamReader(fileStream))
+                    {
+                        return await textReader.ReadToEndAsync();
+                    }
+                }
+                catch (IOException)
+                {
+                    if (i == RetryCount - 1)
+                    {
+                        throw;
+                    }
+
+                    await Task.Delay(RetryDelayMilliseconds);
+                    continue;
+                }
+            }
+
+            return null;
         }
 
         public void Dispose()
