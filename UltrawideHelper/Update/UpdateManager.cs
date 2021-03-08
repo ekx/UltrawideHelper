@@ -19,8 +19,9 @@ namespace UltrawideHelper.Update
 
         private const string UpdateFileName = "update.zip";
         private const string UpdateScriptFileName = "update.ps1";
-        private const string UpdateScript = 
+        private const string UpdateScript =
 @"Start-Sleep -s 1
+Set-Location -Path $PSScriptRoot
 Expand-Archive -Force -Path update.zip -DestinationPath .\
 Remove-Item update.zip -Force
 Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force
@@ -79,7 +80,7 @@ Start-Process -FilePath UltrawideHelper.exe";
                 var startInfo = new ProcessStartInfo()
                 {
                     FileName = "powershell.exe",
-                    Arguments = $"-NoProfile -ExecutionPolicy unrestricted \"{updateScriptFile}\"",
+                    Arguments = $"-NoProfile -ExecutionPolicy unrestricted \"& \'{updateScriptFile}\'\"",
                     UseShellExecute = false
                 };
                 Process.Start(startInfo);
