@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net5.0-windows</TargetFramework>
+		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
@@ -21,6 +21,8 @@
 		<FileVersion>1.0.4.0</FileVersion>
 		<PackageTags>gaming borderless ultrawide</PackageTags>
 		<Version>1.0.4</Version>
+		<LangVersion>default</LangVersion>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -28,13 +30,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
-		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.1.319-beta">
+		<PackageReference Include="H.NotifyIcon.Wpf" Version="1.1.9" />
+		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.1.635-beta">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Octokit" Version="0.50.0" />
-		<PackageReference Include="YamlDotNet" Version="9.1.4" />
+		<PackageReference Include="YamlDotNet" Version="11.2.1" />
 	</ItemGroup>
 
 	<ItemGroup>

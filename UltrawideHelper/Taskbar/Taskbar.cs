@@ -1,4 +1,6 @@
-﻿using Microsoft.Windows.Sdk;
+﻿using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace UltrawideHelper.Taskbar
 {
@@ -13,7 +15,7 @@ namespace UltrawideHelper.Taskbar
 
         public void SetVisibility(bool visible)
         {
-            PInvoke.ShowWindow(hwnd, visible ? Constants.SW_SHOW : Constants.SW_HIDE);
+            PInvoke.ShowWindow(hwnd, visible ? SHOW_WINDOW_CMD.SW_SHOW : SHOW_WINDOW_CMD.SW_HIDE);
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using Microsoft.Windows.Sdk;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 using System.Windows.Interop;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.Input.KeyboardAndMouse;
 using UltrawideHelper.Configuration;
 using UltrawideHelper.Data;
 using UltrawideHelper.Windows;
@@ -51,7 +52,7 @@ namespace UltrawideHelper.Shortcuts
 
             foreach (var shortcut in newConfiguration.ShortcutProfiles)
             {
-                PInvoke.RegisterHotKey(hwnd, shortcut.Id, shortcut.GetModifier(), shortcut.GetKey());
+                PInvoke.RegisterHotKey(hwnd, shortcut.Id, (HOT_KEY_MODIFIERS) shortcut.GetModifier(), shortcut.GetKey());
                 registeredHotKeys.Add(shortcut.Id);
             }
         }
@@ -70,17 +71,17 @@ namespace UltrawideHelper.Shortcuts
         {
             switch (msg)
             {
-                case Constants.WM_HOTKEY:
-
-                    var shortcut = configurationManager.ConfigFile.ShortcutProfiles.SingleOrDefault(s => s.Id == wParam.ToInt32());
+                case (int)PInvoke.WM_HOTKEY:
+                    var shortcut =
+                        configurationManager.ConfigFile.ShortcutProfiles.SingleOrDefault(s => s.Id == wParam.ToInt32());
 
                     if (shortcut == null)
                     {
                         return IntPtr.Zero;
                     }
 
-                    int modifier = (int)lParam & 0x0000FFFF;
-                    int key = (int)((int)lParam & 0xFFFF0000) >> 16;
+                    int modifier = (int) lParam & 0x0000FFFF;
+                    int key = (int) ((int) lParam & 0xFFFF0000) >> 16;
 
                     if (modifier != shortcut.GetModifier() || key != shortcut.GetKey())
                     {

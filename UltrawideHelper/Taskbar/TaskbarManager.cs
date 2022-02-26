@@ -1,4 +1,4 @@
-﻿using Microsoft.Windows.Sdk;
+﻿using Windows.Win32;
 using System;
 using System.Windows.Threading;
 using UltrawideHelper.Configuration;

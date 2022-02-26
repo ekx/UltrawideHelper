@@ -1,11 +1,12 @@
-﻿using Microsoft.Windows.Sdk;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Automation;
 using System.Windows.Threading;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 using UltrawideHelper.Configuration;
 using UltrawideHelper.Data;
 
