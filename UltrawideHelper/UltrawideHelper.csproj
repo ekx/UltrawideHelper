@@ -22,7 +22,7 @@
 		<PackageTags>gaming borderless ultrawide</PackageTags>
 		<Version>1.0.4</Version>
 		<LangVersion>default</LangVersion>
-		<Nullable>enable</Nullable>
+		<Nullable>disable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>

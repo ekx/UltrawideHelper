@@ -7,6 +7,7 @@ using System.Windows.Automation;
 using System.Windows.Threading;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.UI.Accessibility;
 using UltrawideHelper.Configuration;
 using UltrawideHelper.Data;
 
@@ -17,7 +18,9 @@ namespace UltrawideHelper.Windows
         private ConfigurationManager configurationManager;
         private Dictionary<nint, Window> windows;
         private DispatcherTimer dispatcherTimer;
-
+        private WINEVENTPROC winEventProc;
+        private HWINEVENTHOOK winEventHook;
+        
         public WindowManager(ConfigurationManager configurationManager)
         {
             this.configurationManager = configurationManager;
@@ -25,6 +28,9 @@ namespace UltrawideHelper.Windows
             windows = new Dictionary<nint, Window>();
 
             Automation.AddAutomationEventHandler(WindowPattern.WindowOpenedEvent, AutomationElement.RootElement, TreeScope.Children, OnWindowOpened);
+
+            winEventProc = new WINEVENTPROC(OnFocusChanged);
+            winEventHook = PInvoke.SetWinEventHook(PInvoke.EVENT_SYSTEM_FOREGROUND, PInvoke.EVENT_SYSTEM_FOREGROUND, new HINSTANCE(IntPtr.Zero), winEventProc, 0, 0, PInvoke.WINEVENT_OUTOFCONTEXT);
 
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += DispatcherTimer_Tick;
@@ -44,6 +50,15 @@ namespace UltrawideHelper.Windows
             windows.Clear();
 
             Automation.RemoveAllEventHandlers();
+            PInvoke.UnhookWinEvent(winEventHook);
+        }
+        
+        private void OnFocusChanged(HWINEVENTHOOK hWinEventHook, uint @event, HWND hwnd, int idObject, int idChild, uint idEventThread, uint dwmsEventTime)
+        {
+            foreach (var window in windows.Values)
+            {
+                window.OnFocusChanged(hwnd);
+            }
         }
 
         private void OnWindowOpened(object sender, AutomationEventArgs automationEventArgs)

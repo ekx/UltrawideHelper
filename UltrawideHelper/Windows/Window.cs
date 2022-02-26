@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
+using UltrawideHelper.Audio;
 using UltrawideHelper.Data;
 
 namespace UltrawideHelper.Windows
@@ -16,6 +17,7 @@ namespace UltrawideHelper.Windows
         private WindowComposition originalComposition;
         private WindowComposition appliedComposition;
 
+        private uint processId;
         private string processName;
 
         public Window(nint windowHandle)
@@ -25,8 +27,9 @@ namespace UltrawideHelper.Windows
 
             unsafe
             {
-                var processId = 0U;
-                PInvoke.GetWindowThreadProcessId(hwnd, &processId);
+                var pid = 0U;
+                PInvoke.GetWindowThreadProcessId(hwnd, &pid);
+                processId = pid;
                 processName = Process.GetProcessById((int)processId).ProcessName;
             }
         }
@@ -47,6 +50,16 @@ namespace UltrawideHelper.Windows
         {
             SetCurrentComposition(originalComposition);
             appliedComposition = null;
+        }
+        
+        internal void OnFocusChanged(HWND currentFocus)
+        {
+            if (appliedComposition == null) return;
+
+            if (appliedComposition.MuteWhileNotFocused)
+            {
+                VolumeMixer.SetApplicationMute(processId, hwnd.Value != currentFocus.Value);
+            }
         }
 
         private WindowComposition GetCurrentComposition()

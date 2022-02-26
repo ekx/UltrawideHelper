@@ -15,6 +15,8 @@ namespace UltrawideHelper.Data
         public int Height { get; set; }
 
         public int DelayMilliseconds { get; set; }
+        
+        public bool MuteWhileNotFocused { get; set; }
 
         public List<string> WindowStyles { get; set; }
 

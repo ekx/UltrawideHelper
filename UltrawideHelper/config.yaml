@@ -13,6 +13,8 @@ shortcutProfiles:
     positionY: 0                    # Y Position of the window after the hotkey has been pressed
     width: 2560                     # Width of the window after the hotkey has been pressed
     height: 1440                    # Height of the window after the hotkey has been pressed
+    delayMilliseconds: 0            # Delay in milliseconds before the profile will be applied
+    muteWhileNotFocused: true       # If set to true, Application will be muted when it loses focus and unmuted when it gains focus
     windowStyles:                   # List of window styles to be set after the hotkey has been pressed. If empty, window styles will be left alone. Valid styles can be looked up in LookupTables.cs
     - WS_VISIBLE
     extendedWindowStyles:           # List of extended window styles to be set after the hotkey has been pressed. If empty, extended window styles will be left alone. Valid styles can be looked up in LookupTables.cs
@@ -37,6 +39,7 @@ windowProfiles:
     width: 3440                     # Width that will be automatically applied to the window
     height: 1440                    # Height that will be automatically applied to the window
     delayMilliseconds: 20           # Delay in milliseconds before the profile will be applied
+    muteWhileNotFocused: true       # If set to true, Application will be muted when it loses focus and unmuted when it gains focus
     windowStyles:                   # List of window styles to be automatically applied to the window. If empty, window styles will be left alone. Valid styles can be looked up in LookupTables.cs
     - WS_VISIBLE
     extendedWindowStyles:           # List of extended window styles to be automatically applied to the window. If empty, extended window styles will be left alone. Valid styles can be looked up in LookupTables.cs
