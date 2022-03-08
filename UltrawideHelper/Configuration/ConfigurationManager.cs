@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -7,82 +6,79 @@ using UltrawideHelper.Data;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace UltrawideHelper.Configuration
+namespace UltrawideHelper.Configuration;
+
+public class ConfigurationManager : IDisposable
 {
-    public class ConfigurationManager : IDisposable
+    public ConfigurationFile ConfigFile { get; private set; }
+
+    public event ConfigurationChangedEventHandler Changed;
+
+    public static readonly string FileName = "config.yaml";
+    private static readonly string FileDirectory = Path.GetDirectoryName(Application.ResourceAssembly.Location);
+    public static readonly string FilePath = Path.Combine(FileDirectory, FileName);
+
+    private readonly IDeserializer deserializer;
+    private readonly FileSystemWatcher fileSystemWatcher;
+
+    private const int RetryDelayMilliseconds = 10;
+    private const int RetryCount = 10;
+
+    public ConfigurationManager()
     {
-        public ConfigurationFile ConfigFile { get; private set; }
+        deserializer = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build();
 
-        public event ConfigurationChangedEventHandler Changed;
+        ConfigFile = deserializer.Deserialize<ConfigurationFile>(File.ReadAllText(FilePath));
 
-        public static readonly string FileName = "config.yaml";
-        public static readonly string FileDirectory = Path.GetDirectoryName(Application.ResourceAssembly.Location);
-        public static readonly string FilePath = Path.Combine(FileDirectory, FileName);
+        fileSystemWatcher = new FileSystemWatcher();
+        fileSystemWatcher.Path = FileDirectory;
+        fileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite;
+        fileSystemWatcher.Filter = FileName;
+        fileSystemWatcher.Changed += FileSystemWatcher_Changed;
+        fileSystemWatcher.EnableRaisingEvents = true;
+    }
 
-        private IDeserializer deserializer;
-        private FileSystemWatcher fileSystemWatcher;
+    private async void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
+    {
+        fileSystemWatcher.EnableRaisingEvents = false;
 
-        private const int RetryDelayMilliseconds = 10;
-        private const int RetryCount = 10;
+        ConfigFile = deserializer.Deserialize<ConfigurationFile>(await ReadConfigFile());
+        Application.Current.Dispatcher.Invoke(() => { Changed?.Invoke(ConfigFile); });
 
-        public ConfigurationManager()
+        fileSystemWatcher.EnableRaisingEvents = true;
+    }
+
+    private static async Task<string> ReadConfigFile()
+    {
+        await Task.Delay(RetryDelayMilliseconds);
+
+        for (var i = 0; i < RetryCount; i++)
         {
-            deserializer = new DeserializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                .Build();
-
-            ConfigFile = deserializer.Deserialize<ConfigurationFile>(File.ReadAllText(FilePath));
-
-            fileSystemWatcher = new FileSystemWatcher();
-            fileSystemWatcher.Path = FileDirectory;
-            fileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite;
-            fileSystemWatcher.Filter = FileName;
-            fileSystemWatcher.Changed += FileSystemWatcher_Changed;
-            fileSystemWatcher.EnableRaisingEvents = true;
-        }
-
-        private async void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
-        {
-            fileSystemWatcher.EnableRaisingEvents = false;
-
-            ConfigFile = deserializer.Deserialize<ConfigurationFile>(await ReadConfigFile());
-            Application.Current.Dispatcher.Invoke(new Action(() => { Changed.Invoke(ConfigFile); }));
-
-            fileSystemWatcher.EnableRaisingEvents = true;
-        }
-
-        private async Task<string> ReadConfigFile()
-        {
-            await Task.Delay(RetryDelayMilliseconds);
-
-            for (int i = 0; i < RetryCount; i++)
+            try
             {
-                try
-                {
-                    using (var fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                    using (var textReader = new StreamReader(fileStream))
-                    {
-                        return await textReader.ReadToEndAsync();
-                    }
-                }
-                catch (IOException)
-                {
-                    if (i == RetryCount - 1)
-                    {
-                        throw;
-                    }
+                await using var fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using var textReader = new StreamReader(fileStream);
 
-                    await Task.Delay(RetryDelayMilliseconds);
-                    continue;
-                }
+                return await textReader.ReadToEndAsync();
             }
+            catch (IOException)
+            {
+                if (i == RetryCount - 1)
+                {
+                    throw;
+                }
 
-            return null;
+                await Task.Delay(RetryDelayMilliseconds);
+            }
         }
 
-        public void Dispose()
-        {
-            fileSystemWatcher.Dispose();
-        }
+        return null;
+    }
+
+    public void Dispose()
+    {
+        fileSystemWatcher.Dispose();
     }
 }

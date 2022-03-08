@@ -2,20 +2,19 @@
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 
-namespace UltrawideHelper.Taskbar
+namespace UltrawideHelper.Taskbar;
+
+public class Taskbar
 {
-    public class Taskbar
+    private readonly HWND hwnd;
+
+    public Taskbar(nint windowHandle)
     {
-        private HWND hwnd;
+        hwnd = new HWND(windowHandle);
+    }
 
-        public Taskbar(nint windowHandle)
-        {
-            hwnd = new HWND(windowHandle);
-        }
-
-        public void SetVisibility(bool visible)
-        {
-            PInvoke.ShowWindow(hwnd, visible ? SHOW_WINDOW_CMD.SW_SHOW : SHOW_WINDOW_CMD.SW_HIDE);
-        }
+    public void SetVisibility(bool visible)
+    {
+        PInvoke.ShowWindow(hwnd, visible ? SHOW_WINDOW_CMD.SW_SHOW : SHOW_WINDOW_CMD.SW_HIDE);
     }
 }

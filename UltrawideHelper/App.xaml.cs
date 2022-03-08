@@ -11,97 +11,102 @@ using UltrawideHelper.Taskbar;
 using UltrawideHelper.Update;
 using UltrawideHelper.Windows;
 
-namespace UltrawideHelper
+namespace UltrawideHelper;
+
+/// <summary>
+/// Interaction logic for App.xaml
+/// </summary>
+public partial class App
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
+    private ConfigurationManager configurationManager;
+    private WindowManager windowManager;
+    private ShortcutManager shortcutManager;
+    private TaskbarManager taskbarManager;
+    private TaskbarIcon notifyIcon;
+    private Mutex appMutex;
+
+    private const string AppOwner = "ekx";
+    private const string AppName = "UltrawideHelper";
+    private const string NotifyIconResourceName = "NotifyIcon";
+    private const string ErrorLogFileName = "error.log";
+    private const string AutoRunRegistryKeyName = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+    private const string ExecutableExtension = ".exe";
+
+    protected override void OnStartup(StartupEventArgs e)
     {
-        private ConfigurationManager configurationManager;
-        private WindowManager windowManager;
-        private ShortcutManager shortcutManager;
-        private TaskbarManager taskbarManager;
-        private TaskbarIcon notifyIcon;
-        private Mutex appMutex;
+        base.OnStartup(e);
 
-        private const string AppOwner = "ekx";
-        private const string AppName = "UltrawideHelper";
-
-        protected override void OnStartup(StartupEventArgs e)
+        appMutex = new Mutex(true, AppName, out bool newMutexCreated);
+        if (!newMutexCreated)
         {
-            base.OnStartup(e);
-
-            appMutex = new Mutex(true, AppName, out bool newMutexCreated);
-            if (!newMutexCreated)
-            {
-                Shutdown();
-                return;
-            }
-
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
-            configurationManager = new ConfigurationManager();
-            configurationManager.Changed += ConfigurationManager_Changed;
-            ConfigurationManager_Changed(configurationManager.ConfigFile);
-
-            if (configurationManager.ConfigFile.AutoUpdate)
-            {
-                var updateManager = new UpdateManager(AppOwner, AppName);
-                updateManager.CheckForNewVersion();
-            }
-
-            windowManager = new WindowManager(configurationManager);
-
-            shortcutManager = new ShortcutManager(configurationManager, windowManager);
-
-            taskbarManager = new TaskbarManager(configurationManager);
-
-            notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+            Shutdown();
+            return;
         }
 
-        protected override void OnExit(ExitEventArgs e)
-        {
-            CleanUp();
+        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            base.OnExit(e);
+        configurationManager = new ConfigurationManager();
+        configurationManager.Changed += ConfigurationManager_Changed;
+        ConfigurationManager_Changed(configurationManager.ConfigFile);
+
+        if (configurationManager.ConfigFile.AutoUpdate)
+        {
+            var updateManager = new UpdateManager(AppOwner, AppName);
+            updateManager.CheckForNewVersion();
         }
 
-        private void CleanUp()
-        {
-            appMutex?.Dispose();
-            notifyIcon?.Dispose();
-            taskbarManager?.Dispose();
-            shortcutManager?.Dispose();
-            windowManager?.Dispose();
-            configurationManager?.Dispose();
-        }
+        windowManager = new WindowManager(configurationManager);
 
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            var serializableException = new SerializableException((Exception) e.ExceptionObject);
+        shortcutManager = new ShortcutManager(configurationManager, windowManager);
 
-            var fileName = "error.log";
-            var fileDirectory = Path.GetDirectoryName(Application.ResourceAssembly.Location);
-            var filePath = Path.Combine(fileDirectory, fileName);
+        taskbarManager = new TaskbarManager(configurationManager);
 
-            File.WriteAllText(filePath, serializableException.ToString());
-
-            CleanUp();
-        }
-
-        private void ConfigurationManager_Changed(ConfigurationFile newConfiguration)
-        {
-            var autoStartKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-
-            if (newConfiguration.AutoStart)
-            {
-                autoStartKey.SetValue(AppName, Path.ChangeExtension(Application.ResourceAssembly.Location, ".exe"));
-            }
-            else if (autoStartKey.GetValue(AppName) != null)
-            {
-                autoStartKey.DeleteValue(AppName);
-            }
-        }        
+        notifyIcon = (TaskbarIcon)FindResource(NotifyIconResourceName);
     }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        CleanUp();
+
+        base.OnExit(e);
+    }
+
+    private void CleanUp()
+    {
+        appMutex?.Dispose();
+        notifyIcon?.Dispose();
+        taskbarManager?.Dispose();
+        shortcutManager?.Dispose();
+        windowManager?.Dispose();
+        configurationManager?.Dispose();
+    }
+
+    private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        var serializableException = new SerializableException((Exception) e.ExceptionObject);
+        
+        var fileDirectory = Path.GetDirectoryName(ResourceAssembly.Location);
+        var filePath = Path.Combine(fileDirectory ?? throw new InvalidOperationException(), ErrorLogFileName);
+
+        File.WriteAllText(filePath, serializableException.ToString());
+
+        CleanUp();
+    }
+
+    private void ConfigurationManager_Changed(ConfigurationFile newConfiguration)
+    {
+        var autoStartKey = Registry.CurrentUser.OpenSubKey(AutoRunRegistryKeyName, true);
+
+        if (autoStartKey == null)
+            return;
+        
+        if (newConfiguration.AutoStart)
+        {
+            autoStartKey.SetValue(AppName, Path.ChangeExtension(ResourceAssembly.Location, ExecutableExtension));
+        }
+        else if (autoStartKey.GetValue(AppName) != null)
+        {
+            autoStartKey.DeleteValue(AppName);
+        }
+    }        
 }

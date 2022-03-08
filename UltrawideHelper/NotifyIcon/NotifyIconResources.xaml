@@ -12,6 +12,7 @@
 
     <!-- the application's NotifyIcon - started from App.xaml.cs. Declares its own view model. -->
     <tb:TaskbarIcon x:Key="NotifyIcon"
+                    MenuActivation="LeftOrRightClick"
                     IconSource="/App.ico"
                     ToolTipText="UltrawideHelper"
                     DoubleClickCommand="{Binding ShowConfigurationFile}"
