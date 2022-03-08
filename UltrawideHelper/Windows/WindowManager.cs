@@ -18,8 +18,8 @@ public class WindowManager : IDisposable
     private readonly ConfigurationManager configurationManager;
     private readonly Dictionary<nint, Window> windows;
     private readonly DispatcherTimer dispatcherTimer;
-    private readonly WINEVENTPROC winEventProc;
     private readonly HWINEVENTHOOK winEventHook;
+    private WINEVENTPROC winEventProc;
         
     public WindowManager(ConfigurationManager configurationManager)
     {
@@ -29,7 +29,7 @@ public class WindowManager : IDisposable
 
         Automation.AddAutomationEventHandler(WindowPattern.WindowOpenedEvent, AutomationElement.RootElement, TreeScope.Children, OnWindowOpened);
 
-        winEventProc = new WINEVENTPROC(OnFocusChanged);
+        winEventProc = OnFocusChanged;
         winEventHook = PInvoke.SetWinEventHook(PInvoke.EVENT_SYSTEM_FOREGROUND, PInvoke.EVENT_SYSTEM_FOREGROUND, new HINSTANCE(IntPtr.Zero), winEventProc, 0, 0, PInvoke.WINEVENT_OUTOFCONTEXT);
 
         dispatcherTimer = new DispatcherTimer();
@@ -51,6 +51,7 @@ public class WindowManager : IDisposable
 
         Automation.RemoveAllEventHandlers();
         PInvoke.UnhookWinEvent(winEventHook);
+        winEventProc = null;
         
         GC.SuppressFinalize(this);
     }
