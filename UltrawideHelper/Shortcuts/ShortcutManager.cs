@@ -44,6 +44,8 @@ public class ShortcutManager : System.Windows.Window, IDisposable
     {
         UnregisterAllHotKeys();
         source.RemoveHook(OnHotKeyPressed);
+        
+        GC.SuppressFinalize(this);
     }
 
     private void ConfigurationManager_Changed(ConfigurationFile newConfiguration)

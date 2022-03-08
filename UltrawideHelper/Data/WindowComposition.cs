@@ -3,24 +3,29 @@ using System.Collections.Generic;
 
 namespace UltrawideHelper.Data;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable CollectionNeverUpdated.Global
+// ReSharper disable ClassNeverInstantiated.Global
+
 public class WindowComposition : IEquatable<WindowComposition>
 {
-    public int PositionX { get; set; }
+    public int PositionX { get; init; }
 
-    public int PositionY { get; set; }
+    public int PositionY { get; init; }
 
-    public int Width { get; set; }
+    public int Width { get; init; }
 
-    public int Height { get; set; }
+    public int Height { get; init; }
+    
+    public int DelayMilliseconds { get; init; }
 
-    public int DelayMilliseconds { get; set; }
-        
-    public bool MuteWhileNotFocused { get; set; }
+    public bool MuteWhileNotFocused { get; init; }
+    
+    public List<string> WindowStyles { get; init; } = new();
 
-    public List<string> WindowStyles { get; set; }
-
-    public List<string> ExtendedWindowStyles { get; set; }
-
+    public List<string> ExtendedWindowStyles { get; init; } = new();
+    
     public bool HasWindowStyle => WindowStyles is { Count: > 0 };
 
     public bool HasExtendedWindowStyle => ExtendedWindowStyles is { Count: > 0 };
@@ -41,7 +46,7 @@ public class WindowComposition : IEquatable<WindowComposition>
 
     public void SetWindowStyle(uint windowStyle)
     {
-        WindowStyles = new List<string>();
+        WindowStyles.Clear();
 
         foreach (var (key, value) in LookupTables.WindowStyles)
         {
@@ -68,7 +73,7 @@ public class WindowComposition : IEquatable<WindowComposition>
 
     public void SetExtendedWindowStyle(uint extendedWindowStyle)
     {
-        ExtendedWindowStyles = new List<string>();
+        ExtendedWindowStyles.Clear();
 
         foreach (var (key, value) in LookupTables.ExtendedWindowStyles)
         {
@@ -96,5 +101,10 @@ public class WindowComposition : IEquatable<WindowComposition>
     public override bool Equals(object obj)
     {
         return Equals(obj as WindowComposition);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(PositionX, PositionY, Width, Height, WindowStyles, ExtendedWindowStyles);
     }
 }

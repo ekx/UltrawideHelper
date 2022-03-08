@@ -62,16 +62,17 @@ public class Window
 
     private WindowComposition GetCurrentComposition()
     {
-        var result = new WindowComposition();
-
         PInvoke.GetWindowRect(hwnd, out var rect);
 
-        result.PositionX = rect.left;
-        result.Width = rect.right - rect.left;
-        result.PositionY = rect.top;
-        result.Height = rect.bottom - rect.top;
+        var result = new WindowComposition
+        {
+            PositionX = rect.left,
+            Width = rect.right - rect.left,
+            PositionY = rect.top,
+            Height = rect.bottom - rect.top
+        };
 
-        result.SetWindowStyle((uint)PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE));
+        result.SetWindowStyle((uint) PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE));
         result.SetExtendedWindowStyle((uint)PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE));
 
         return result;

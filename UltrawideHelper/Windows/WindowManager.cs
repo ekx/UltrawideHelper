@@ -51,6 +51,8 @@ public class WindowManager : IDisposable
 
         Automation.RemoveAllEventHandlers();
         PInvoke.UnhookWinEvent(winEventHook);
+        
+        GC.SuppressFinalize(this);
     }
         
     private void OnFocusChanged(HWINEVENTHOOK hWinEventHook, uint @event, HWND hwnd, int idObject, int idChild, uint idEventThread, uint dwmsEventTime)

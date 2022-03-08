@@ -14,7 +14,7 @@ public class ConfigurationManager : IDisposable
 
     public event ConfigurationChangedEventHandler Changed;
 
-    public static readonly string FileName = "config.yaml";
+    public const string FileName = "config.yaml";
     private static readonly string FileDirectory = Path.GetDirectoryName(Application.ResourceAssembly.Location);
     public static readonly string FilePath = Path.Combine(FileDirectory, FileName);
 
@@ -80,5 +80,7 @@ public class ConfigurationManager : IDisposable
     public void Dispose()
     {
         fileSystemWatcher.Dispose();
+        
+        GC.SuppressFinalize(this);
     }
 }

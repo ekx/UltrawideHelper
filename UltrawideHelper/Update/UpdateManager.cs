@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
 using UltrawideHelper.Configuration;
 using Application = System.Windows.Application;
 

@@ -18,6 +18,7 @@ public class NotifyIconViewModel
         {
             return new DelegateCommand 
             { 
+                CanExecuteFunc = () => true,
                 CommandAction = () =>
                 {
                     new Process
@@ -39,7 +40,11 @@ public class NotifyIconViewModel
     {
         get
         {
-            return new DelegateCommand { CommandAction = () => Application.Current.Shutdown() };
+            return new DelegateCommand
+            {
+                CanExecuteFunc = () => true,
+                CommandAction = () => Application.Current.Shutdown()
+            };
         }
     }
 }

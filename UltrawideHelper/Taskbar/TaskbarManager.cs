@@ -32,6 +32,8 @@ public class TaskbarManager : IDisposable
     {
         dispatcherTimer.Stop();
         primaryTaskbar.SetVisibility(true);
+        
+        GC.SuppressFinalize(this);
     }
 
     private void ConfigurationManager_Changed(Data.ConfigurationFile newConfiguration)

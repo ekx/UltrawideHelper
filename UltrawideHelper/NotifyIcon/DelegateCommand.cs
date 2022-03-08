@@ -9,7 +9,7 @@ namespace UltrawideHelper.NotifyIcon;
 public class DelegateCommand : ICommand
 {
     public Action CommandAction { get; init; }
-    private Func<bool> CanExecuteFunc { get; set; }
+    public Func<bool> CanExecuteFunc { get; init; }
 
     public void Execute(object parameter)
     {
