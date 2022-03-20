@@ -32,16 +32,18 @@ public class Window
         }
     }
 
-    public void ApplyWindowComposition(WindowComposition windowComposition)
+    public bool ApplyWindowComposition(WindowComposition windowComposition)
     {           
         if (windowComposition.Equals(appliedComposition))
         {
             RevertWindowComposition();
-            return;
+            return false;
         }
 
         SetCurrentComposition(windowComposition);
         appliedComposition = windowComposition;
+
+        return true;
     }
 
     public void RevertWindowComposition()

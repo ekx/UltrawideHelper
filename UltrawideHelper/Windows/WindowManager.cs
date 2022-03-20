@@ -15,6 +15,8 @@ namespace UltrawideHelper.Windows;
 
 public class WindowManager : IDisposable
 {
+    public bool IsAnyProfileActive => windows.Count > 0;
+
     private readonly ConfigurationManager configurationManager;
     private readonly Dictionary<nint, Window> windows;
     private readonly DispatcherTimer dispatcherTimer;
@@ -112,6 +114,9 @@ public class WindowManager : IDisposable
             windows.Add(windowHandle, new Window(windowHandle));
         }
 
-        windows[windowHandle].ApplyWindowComposition(windowComposition);
+        if (!windows[windowHandle].ApplyWindowComposition(windowComposition))
+        {
+            windows.Remove(windowHandle);
+        }
     }
 }

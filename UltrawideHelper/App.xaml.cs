@@ -59,7 +59,7 @@ public partial class App
 
         shortcutManager = new ShortcutManager(configurationManager, windowManager);
 
-        taskbarManager = new TaskbarManager(configurationManager);
+        taskbarManager = new TaskbarManager(configurationManager, windowManager);
 
         notifyIcon = (TaskbarIcon)FindResource(NotifyIconResourceName);
     }

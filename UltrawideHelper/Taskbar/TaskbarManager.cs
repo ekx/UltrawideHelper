@@ -2,6 +2,8 @@
 using System;
 using System.Windows.Threading;
 using UltrawideHelper.Configuration;
+using UltrawideHelper.Data;
+using UltrawideHelper.Windows;
 
 namespace UltrawideHelper.Taskbar;
 
@@ -10,10 +12,12 @@ public class TaskbarManager : IDisposable
     private readonly DispatcherTimer dispatcherTimer;
     private readonly Taskbar primaryTaskbar;
     private readonly IAppVisibility appVisibility;
+    private readonly WindowManager windowManager;
+    private ConfigurationFile currentConfiguration;
 
     private const string PrimaryTaskbarClassName = "Shell_TrayWnd";
 
-    public TaskbarManager(ConfigurationManager configurationManager)
+    public TaskbarManager(ConfigurationManager configurationManager, WindowManager windowManager)
     {
         dispatcherTimer = new DispatcherTimer();
         dispatcherTimer.Tick += DispatcherTimer_Tick;
@@ -26,6 +30,8 @@ public class TaskbarManager : IDisposable
 
         configurationManager.Changed += ConfigurationManager_Changed;
         ConfigurationManager_Changed(configurationManager.ConfigFile);
+
+        this.windowManager = windowManager;
     }
 
     public void Dispose()
@@ -38,6 +44,8 @@ public class TaskbarManager : IDisposable
 
     private void ConfigurationManager_Changed(Data.ConfigurationFile newConfiguration)
     {
+        currentConfiguration = newConfiguration;
+        
         if (newConfiguration.HideTaskbar)
         {
             dispatcherTimer.Start();
@@ -51,7 +59,10 @@ public class TaskbarManager : IDisposable
 
     private void DispatcherTimer_Tick(object sender, EventArgs e)
     {
-        appVisibility.IsLauncherVisible(out var visible);
-        primaryTaskbar.SetVisibility(visible);
+        appVisibility.IsLauncherVisible(out var startMenuVisible);
+        var profileActive = windowManager.IsAnyProfileActive;
+
+        var showTaskbar = (currentConfiguration.HideTaskbarWhenProfileActive && !profileActive) || startMenuVisible;
+        primaryTaskbar.SetVisibility(showTaskbar);
     }
 }
