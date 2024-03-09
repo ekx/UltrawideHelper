@@ -1,9 +1,9 @@
-﻿using Hardcodet.Wpf.TaskbarNotification;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Threading;
 using System.Windows;
+using H.NotifyIcon;
 using UltrawideHelper.Configuration;
 using UltrawideHelper.Data;
 using UltrawideHelper.Shortcuts;
@@ -62,6 +62,7 @@ public partial class App
         taskbarManager = new TaskbarManager(configurationManager, windowManager);
 
         notifyIcon = (TaskbarIcon)FindResource(NotifyIconResourceName);
+        notifyIcon?.ForceCreate();
     }
 
     protected override void OnExit(ExitEventArgs e)
