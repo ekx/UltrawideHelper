@@ -6,7 +6,7 @@
 		<UseWPF>true</UseWPF>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
-		<PackageIcon></PackageIcon>
+		<PackageIcon>App.ico</PackageIcon>
 		<ApplicationIcon>App.ico</ApplicationIcon>
 		<Authors>Benjamin Dengler</Authors>
 		<Company />
@@ -17,12 +17,12 @@
 		<Description>Utility to help with borderless gaming on ultrawide monitors</Description>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<NeutralLanguage>en</NeutralLanguage>
-		<AssemblyVersion>1.0.6.0</AssemblyVersion>
-		<FileVersion>1.0.6.0</FileVersion>
+		<AssemblyVersion>1.0.7.0</AssemblyVersion>
+		<FileVersion>1.0.7.0</FileVersion>
 		<PackageTags>gaming borderless ultrawide</PackageTags>
 		<LangVersion>default</LangVersion>
 		<Nullable>disable</Nullable>
-		<PackageVersion>1.0.6</PackageVersion>
+		<PackageVersion>1.0.7</PackageVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -30,14 +30,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="H.NotifyIcon" Version="2.0.124" />
-		<PackageReference Include="H.NotifyIcon.Wpf" Version="2.0.124" />
-		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.2.206-beta">
+		<PackageReference Include="H.NotifyIcon" Version="2.1.3" />
+		<PackageReference Include="H.NotifyIcon.Wpf" Version="2.1.3" />
+		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Octokit" Version="10.0.0" />
-		<PackageReference Include="YamlDotNet" Version="15.1.2" />
+		<PackageReference Include="Octokit" Version="13.0.1" />
+		<PackageReference Include="YamlDotNet" Version="16.1.3" />
 	</ItemGroup>
 
 	<ItemGroup>
