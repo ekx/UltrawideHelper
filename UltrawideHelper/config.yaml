@@ -1,49 +1,50 @@
 # General Settings
-autoStart: false                    # Start the application with the system?
-autoUpdate: true                    # Toggles the automatic update of the application when newer versions are released
-autoApplyProfiles: true             # Can be used to pause the automatic window profiles
-hideTaskbar: true                   # When true taskbar will only be visible when the start menu is visible
-hideTaskbarWhenProfileActive: true  # When true and previous setting also true taskbar will be hidden only when any profile is active
+autoStart: false                            # Start the application with the system?
+autoUpdate: true                            # Toggles the automatic update of the application when newer versions are released
+autoApplyProfiles: true                     # Can be used to pause the automatic window profiles
+hideTaskbar: true                           # When true taskbar will only be visible when the start menu is visible
+hideTaskbarWhenProfileActive: true          # When true and previous setting also true taskbar will be hidden only when any profile is active
+muteFocusedApplicationShortcut: ALT+M       # Key combination for muting the application which is currently in focus
 
 # Shortcut Settings
 shortcutProfiles:
-- id: 9001                          # Identifier for the shortcut. Must be unique
-  keyCombination: ALT+F10           # Key combination. Can be any number of different modifiers seperated by + symbols followed by one key. Valid modifiers and keys can be looked up in LookupTables.cs
-  windowComposition:
-    positionX: 0                    # X Position of the window after the hotkey has been pressed
-    positionY: 0                    # Y Position of the window after the hotkey has been pressed
-    width: 2560                     # Width of the window after the hotkey has been pressed
-    height: 1440                    # Height of the window after the hotkey has been pressed
-    delayMilliseconds: 0            # Delay in milliseconds before the profile will be applied
-    muteWhileNotFocused: true       # If set to true, Application will be muted when it loses focus and unmuted when it gains focus
-    windowStyles:                   # List of window styles to be set after the hotkey has been pressed. If empty, window styles will be left alone. Valid styles can be looked up in LookupTables.cs
-    - WS_VISIBLE
-    extendedWindowStyles:           # List of extended window styles to be set after the hotkey has been pressed. If empty, extended window styles will be left alone. Valid styles can be looked up in LookupTables.cs
-- id: 9002
-  keyCombination: ALT+F11
-  windowComposition:
-    positionX: 0
-    positionY: 0
-    width: 3440
-    height: 1440
-    windowStyles:
-    - WS_VISIBLE
-    extendedWindowStyles: 
-
-# Auto Window Profile Settings
-windowProfiles:
-- titleRegex: ^(Yakuza 4)$          # A regular expression. If this expression matches the window title the following profile will be applied automatically at window creation
-  processName: Yakuza4              # The name of process that spawns the window. Must be correct or profile wont be applied automatically
-  windowComposition:
-    positionX: 0                    # X Position that will be automatically applied to the window
-    positionY: 0                    # Y Position that will be automatically applied to the window
-    width: 3440                     # Width that will be automatically applied to the window
-    height: 1440                    # Height that will be automatically applied to the window
-    delayMilliseconds: 20           # Delay in milliseconds before the profile will be applied
-    muteWhileNotFocused: true       # If set to true, Application will be muted when it loses focus and unmuted when it gains focus
-    windowStyles:                   # List of window styles to be automatically applied to the window. If empty, window styles will be left alone. Valid styles can be looked up in LookupTables.cs
-    - WS_VISIBLE
-    extendedWindowStyles:           # List of extended window styles to be automatically applied to the window. If empty, extended window styles will be left alone. Valid styles can be looked up in LookupTables.cs
+- id: 9001                                  # Identifier for the shortcut. Must be unique
+  keyCombination: ALT+F10                   # Key combination. Can be any number of different modifiers seperated by + symbols followed by one key. Valid modifiers and keys can be looked up in LookupTables.cs
+  windowComposition:                        
+    positionX: 0                            # X Position of the window after the hotkey has been pressed
+    positionY: 0                            # Y Position of the window after the hotkey has been pressed
+    width: 2560                             # Width of the window after the hotkey has been pressed
+    height: 1440                            # Height of the window after the hotkey has been pressed
+    delayMilliseconds: 0                    # Delay in milliseconds before the profile will be applied
+    muteWhileNotFocused: true               # If set to true, Application will be muted when it loses focus and unmuted when it gains focus
+    windowStyles:                           # List of window styles to be set after the hotkey has been pressed. If empty, window styles will be left alone. Valid styles can be looked up in LookupTables.cs
+    - WS_VISIBLE                            
+    extendedWindowStyles:                   # List of extended window styles to be set after the hotkey has been pressed. If empty, extended window styles will be left alone. Valid styles can be looked up in LookupTables.cs
+- id: 9002                                  
+  keyCombination: ALT+F11                   
+  windowComposition:                        
+    positionX: 0                            
+    positionY: 0                            
+    width: 3440                             
+    height: 1440                            
+    windowStyles:                           
+    - WS_VISIBLE                            
+    extendedWindowStyles:                   
+                                            
+# Auto Window Profile Settings              
+windowProfiles:                             
+- titleRegex: ^(Yakuza 4)$                  # A regular expression. If this expression matches the window title the following profile will be applied automatically at window creation
+  processName: Yakuza4                      # The name of process that spawns the window. Must be correct or profile wont be applied automatically
+  windowComposition:                        
+    positionX: 0                            # X Position that will be automatically applied to the window
+    positionY: 0                            # Y Position that will be automatically applied to the window
+    width: 3440                             # Width that will be automatically applied to the window
+    height: 1440                            # Height that will be automatically applied to the window
+    delayMilliseconds: 20                   # Delay in milliseconds before the profile will be applied
+    muteWhileNotFocused: true               # If set to true, Application will be muted when it loses focus and unmuted when it gains focus
+    windowStyles:                           # List of window styles to be automatically applied to the window. If empty, window styles will be left alone. Valid styles can be looked up in LookupTables.cs
+    - WS_VISIBLE                            
+    extendedWindowStyles:                   # List of extended window styles to be automatically applied to the window. If empty, extended window styles will be left alone. Valid styles can be looked up in LookupTables.cs
 - titleRegex: ^(Persona4 GOLDEN).*$
   processName: P4G
   windowComposition:

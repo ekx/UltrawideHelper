@@ -14,23 +14,4 @@ public class ShortcutProfile
     public string KeyCombination { get; init; }
         
     public WindowComposition WindowComposition { get; init; }
-
-    public uint GetModifier()
-    {
-        var keys = KeyCombination.Split('+');
-        var result = 0U;
-
-        foreach (var key in keys.SkipLast(1))
-        {
-            result |= LookupTables.Modifiers[key];
-        }    
-
-        return result;
-    }
-
-    public uint GetKey()
-    {
-        var keys = KeyCombination.Split('+');
-        return LookupTables.Keys[keys.Last()];
-    }
 }

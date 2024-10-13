@@ -5,6 +5,7 @@ using System.Windows.Interop;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.Input.KeyboardAndMouse;
+using UltrawideHelper.Audio;
 using UltrawideHelper.Configuration;
 using UltrawideHelper.Data;
 using UltrawideHelper.Windows;
@@ -20,6 +21,8 @@ public class ShortcutManager : System.Windows.Window, IDisposable
 
     private readonly ConfigurationManager configurationManager;
     private readonly WindowManager windowManager;
+    
+    private const int ToggleMuteHotkeyId = 2141314714;
 
     public ShortcutManager(ConfigurationManager configurationManager, WindowManager windowManager)
     {
@@ -52,9 +55,19 @@ public class ShortcutManager : System.Windows.Window, IDisposable
     {
         UnregisterAllHotKeys();
 
+        if (!string.IsNullOrWhiteSpace(newConfiguration.MuteFocusedApplicationShortcut))
+        {
+            PInvoke.RegisterHotKey(
+                hwnd, 
+                ToggleMuteHotkeyId,
+                (HOT_KEY_MODIFIERS) ShortcutHelper.GetModifier(newConfiguration.MuteFocusedApplicationShortcut),
+                ShortcutHelper.GetKey(newConfiguration.MuteFocusedApplicationShortcut));
+            registeredHotKeys.Add(ToggleMuteHotkeyId);
+        }
+        
         foreach (var shortcut in newConfiguration.ShortcutProfiles)
         {
-            PInvoke.RegisterHotKey(hwnd, shortcut.Id, (HOT_KEY_MODIFIERS) shortcut.GetModifier(), shortcut.GetKey());
+            PInvoke.RegisterHotKey(hwnd, shortcut.Id, (HOT_KEY_MODIFIERS) ShortcutHelper.GetModifier(shortcut.KeyCombination), ShortcutHelper.GetKey(shortcut.KeyCombination));
             registeredHotKeys.Add(shortcut.Id);
         }
     }
@@ -74,26 +87,45 @@ public class ShortcutManager : System.Windows.Window, IDisposable
         switch (msg)
         {
             case (int)PInvoke.WM_HOTKEY:
+                var modifier = (int) lParam & 0x0000FFFF;
+                var key = (int) ((int) lParam & 0xFFFF0000) >> 16;
+                var foregroundHwnd = PInvoke.GetForegroundWindow();
+
+                if (wParam.ToInt32() == ToggleMuteHotkeyId)
+                {
+                    unsafe
+                    {
+                        var keyCombination = configurationManager.ConfigFile.MuteFocusedApplicationShortcut;
+                    
+                        if (modifier != ShortcutHelper.GetModifier(keyCombination) || key != ShortcutHelper.GetKey(keyCombination))
+                        {
+                            return IntPtr.Zero;
+                        }
+                    
+                        var pid = 0U;
+                        PInvoke.GetWindowThreadProcessId(foregroundHwnd, &pid);
+                        VolumeMixer.ToggleApplicationMute(pid);
+                    
+                        handled = true;
+                        break;
+                    }
+                }
+                
                 var shortcut = configurationManager.ConfigFile.ShortcutProfiles.SingleOrDefault(s => s.Id == wParam.ToInt32());
 
                 if (shortcut == null)
                 {
                     return IntPtr.Zero;
                 }
-
-                var modifier = (int) lParam & 0x0000FFFF;
-                var key = (int) ((int) lParam & 0xFFFF0000) >> 16;
-
-                if (modifier != shortcut.GetModifier() || key != shortcut.GetKey())
+                
+                if (modifier != ShortcutHelper.GetModifier(shortcut.KeyCombination) || key != ShortcutHelper.GetKey(shortcut.KeyCombination))
                 {
                     return IntPtr.Zero;
                 }
-
-                var foregroundHwnd = PInvoke.GetForegroundWindow();
+                
                 windowManager.ApplyWindowComposition(foregroundHwnd.Value, shortcut.WindowComposition);
 
                 handled = true;
-
                 break;
         }
 

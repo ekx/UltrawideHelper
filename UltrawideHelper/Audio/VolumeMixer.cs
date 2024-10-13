@@ -12,6 +12,19 @@ internal static class VolumeMixer
 
         var guid = Guid.Empty;
         volume.SetMute(mute, ref guid);
+        
+        Marshal.ReleaseComObject(volume);
+    }
+
+    public static void ToggleApplicationMute(uint pid)
+    {
+        var volume = GetVolumeObject(pid);
+        if (volume == null) return;
+        
+        var guid = Guid.Empty;
+        volume.GetMute(out var mute);
+        volume.SetMute(!mute, ref guid);
+        
         Marshal.ReleaseComObject(volume);
     }
 
