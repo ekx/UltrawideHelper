@@ -8,6 +8,7 @@ using Windows.Win32.UI.Input.KeyboardAndMouse;
 using UltrawideHelper.Audio;
 using UltrawideHelper.Configuration;
 using UltrawideHelper.Data;
+using UltrawideHelper.Suspend;
 using UltrawideHelper.Windows;
 
 namespace UltrawideHelper.Shortcuts;
@@ -21,15 +22,21 @@ public class ShortcutManager : System.Windows.Window, IDisposable
 
     private readonly ConfigurationManager configurationManager;
     private readonly WindowManager windowManager;
+    private readonly SuspendManager suspendManager;
     
     private const int ToggleMuteHotkeyId = 2141314714;
+    private const int TogglePauseHotkeyId = 2141314715;
 
-    public ShortcutManager(ConfigurationManager configurationManager, WindowManager windowManager)
+    public ShortcutManager(
+        ConfigurationManager configurationManager, 
+        WindowManager windowManager,
+        SuspendManager suspendManager)
     {
         this.configurationManager = configurationManager;
         configurationManager.Changed += ConfigurationManager_Changed;
 
         this.windowManager = windowManager;
+        this.suspendManager = suspendManager;
 
         var helper = new WindowInteropHelper(this);
         helper.EnsureHandle();
@@ -63,6 +70,16 @@ public class ShortcutManager : System.Windows.Window, IDisposable
                 (HOT_KEY_MODIFIERS) ShortcutHelper.GetModifier(newConfiguration.MuteFocusedApplicationShortcut),
                 ShortcutHelper.GetKey(newConfiguration.MuteFocusedApplicationShortcut));
             registeredHotKeys.Add(ToggleMuteHotkeyId);
+        }
+
+        if (!string.IsNullOrWhiteSpace(newConfiguration.PauseFocusedApplicationShortcut))
+        {
+            PInvoke.RegisterHotKey(
+                hwnd,
+                TogglePauseHotkeyId,
+                (HOT_KEY_MODIFIERS)ShortcutHelper.GetModifier(newConfiguration.PauseFocusedApplicationShortcut),
+                ShortcutHelper.GetKey(newConfiguration.PauseFocusedApplicationShortcut));
+            registeredHotKeys.Add(TogglePauseHotkeyId);
         }
         
         foreach (var shortcut in newConfiguration.ShortcutProfiles)
@@ -105,6 +122,26 @@ public class ShortcutManager : System.Windows.Window, IDisposable
                         var pid = 0U;
                         PInvoke.GetWindowThreadProcessId(foregroundHwnd, &pid);
                         VolumeMixer.ToggleApplicationMute(pid);
+                    
+                        handled = true;
+                        break;
+                    }
+                }
+
+                if (wParam.ToInt32() == TogglePauseHotkeyId)
+                {
+                    unsafe
+                    {
+                        var keyCombination = configurationManager.ConfigFile.PauseFocusedApplicationShortcut;
+                    
+                        if (modifier != ShortcutHelper.GetModifier(keyCombination) || key != ShortcutHelper.GetKey(keyCombination))
+                        {
+                            return IntPtr.Zero;
+                        }
+                    
+                        var pid = 0U;
+                        PInvoke.GetWindowThreadProcessId(foregroundHwnd, &pid);
+                        suspendManager.ToggleProcessSuspended(pid);
                     
                         handled = true;
                         break;

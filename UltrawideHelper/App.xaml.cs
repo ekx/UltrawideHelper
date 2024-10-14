@@ -7,6 +7,7 @@ using H.NotifyIcon;
 using UltrawideHelper.Configuration;
 using UltrawideHelper.Data;
 using UltrawideHelper.Shortcuts;
+using UltrawideHelper.Suspend;
 using UltrawideHelper.Taskbar;
 using UltrawideHelper.Update;
 using UltrawideHelper.Windows;
@@ -20,6 +21,7 @@ public partial class App
 {
     private ConfigurationManager configurationManager;
     private WindowManager windowManager;
+    private SuspendManager suspendManager;
     private ShortcutManager shortcutManager;
     private TaskbarManager taskbarManager;
     private TaskbarIcon notifyIcon;
@@ -57,7 +59,9 @@ public partial class App
 
         windowManager = new WindowManager(configurationManager);
 
-        shortcutManager = new ShortcutManager(configurationManager, windowManager);
+        suspendManager = new SuspendManager();
+        
+        shortcutManager = new ShortcutManager(configurationManager, windowManager, suspendManager);
 
         taskbarManager = new TaskbarManager(configurationManager, windowManager);
 

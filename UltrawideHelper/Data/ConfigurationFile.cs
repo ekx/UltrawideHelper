@@ -20,6 +20,8 @@ public class ConfigurationFile
     public bool HideTaskbarWhenProfileActive { get; init; }
     
     public string MuteFocusedApplicationShortcut { get; init; }
+    
+    public string PauseFocusedApplicationShortcut { get; init; }
 
     public List<ShortcutProfile> ShortcutProfiles { get; init; }
 

@@ -5,6 +5,7 @@ autoApplyProfiles: true                     # Can be used to pause the automatic
 hideTaskbar: true                           # When true taskbar will only be visible when the start menu is visible
 hideTaskbarWhenProfileActive: true          # When true and previous setting also true taskbar will be hidden only when any profile is active
 muteFocusedApplicationShortcut: ALT+M       # Key combination for muting the application which is currently in focus
+pauseFocusedApplicationShortcut: ALT+P      # Key combination for suspending the application which is currently in focus (Experimental - can lead to crashes)
 
 # Shortcut Settings
 shortcutProfiles:
